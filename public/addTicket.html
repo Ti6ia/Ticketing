@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script defer src="addTicket.js"></script>
+    <title>Add a new Ticket</title>
+</head>
+<body>
+    <main>
+        <div id="content">
+            <div class="rows">
+                <span class="text">Ticket:</span>
+                <span id="id" class="text">id</span>
+            </div>
+            
+            <div class="rows">
+                <div class="cols">
+                    <span class="text">Name</span>
+                    <input type="text" id="name">
+                </div>
+                <div class="cols">
+                    <span class="text">Second Name</span>
+                    <input type="text" id="secondName">
+                </div>
+            </div>
+            
+            <div class="rows">
+                <div class="cols">
+                    <span class="text">Subject</span>
+                    <select name="subjects" id="subject">
+                        <option value="totem">Problema tecnico totem</option>
+                        <option value="shoes">Vorrei una scarpa che qui non c'è</option>
+                        <option value="cashier">Il cassiere è uno stronzo</option>
+                    </select>
+                </div>
+                <div class="cols">
+                    <span class="text">Store</span>
+                    <select name="stores" id="store">
+                        <option value="aosta">Aosta</option>
+                        <option value="castelfranco">Castelfranco veneto</option>
+                        <option value="genova">Genova</option>
+                        <option value="roma">Roma</option>
+                        <option value="udine">Udine</option>
+                        <option value="verbania">Verbania</option>
+                        <option value="trento">Trento</option>
+                    </select>
+                </div>
+                <div class="cols">
+                    <span class="text">Urgency</span>
+                    <select name="urgencyLevel" id="urgency">
+                        <option value="low">Basso</option>
+                        <option value="medium">Medio</option>
+                        <option value="high">Alto</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="rows">
+                <div class="cols">
+                    <span class="text">Oggetto: </span>
+                    <input type="text" id="title">
+                </div>
+            </div>   
+            <div class="rows">
+                <div class="cols">
+                    <span class="text">Descrizione: </span>
+                    <textarea name="description" id="description" cols="30" rows="5"></textarea>
+                </div>
+            </div>
+
+            <div class="rows">
+                <button id="submit" type="submit">Conferma Ticket</button>
+            </div>
+
+            <div class="rows">
+                <a href="index.html">Home page</a>
+            </div>
+</body>
+</html>
