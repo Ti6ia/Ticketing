@@ -17,7 +17,7 @@ const ticketSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    urgency: {
+    priority: {
         type: String,
         required: true
     },
@@ -28,6 +28,11 @@ const ticketSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true
+    },
+    date: {
+        type: Date,
+        required: true,
+        default: Date.now
     }
 });
 

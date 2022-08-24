@@ -1,5 +1,5 @@
 const addTicketReq = async (obj) => {
-    const rawRes = await fetch('/addTicket', {
+    const rawRes = await fetch('admin/addTicket', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -10,7 +10,7 @@ const addTicketReq = async (obj) => {
             secondName: obj.secondName,
             subject: obj.subject,
             store: obj.store,
-            urgency: obj.urgency,
+            priority: obj.priority,
             title: obj.title,
             description: obj.description
          })
@@ -28,7 +28,7 @@ submit.addEventListener('click', () => {
         secondName: document.getElementById("secondName").value,
         subject: document.getElementById("subject").value,
         store: document.getElementById("store").value,
-        urgency: document.getElementById("urgency").value,
+        priority: document.getElementById("priority").value,
         title: document.getElementById("title").value,
         description: document.getElementById("description").value
     }

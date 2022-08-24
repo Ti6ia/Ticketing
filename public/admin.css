@@ -1,0 +1,92 @@
+*, *::before, *::after{
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#dashboard{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 0.2fr minmax(600px, 1fr);
+}
+
+.sideBar{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: #FFFFFF;
+    background-color: #1894D5;
+}
+.sideBarItem{
+    font-size: 20px;
+    padding-left: 1rem;
+}
+
+#logo{
+    font-size: 32px;
+    font-weight: 700;
+    margin: 2rem 1rem 2rem 1rem;
+}
+
+.main{
+    display: grid;
+    grid-template-rows: minmax(50px, 0.08fr) 0.9fr;
+}
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 2rem;
+    font-size: 25px;
+    background-color: #FBFBFB;
+    box-shadow: 5px 1px 8px 1px #888888;
+}
+#btnAddTicket{
+    font-size: 35px;
+}
+
+#content{
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    background-color: #E4ECF6;
+}
+#ticketList{
+    margin: 1rem 2rem 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.ticket{
+    height: 3.5rem;
+    display: grid;
+    grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 0.3fr;
+    font-size: 18px;
+    background-color: #FBFBFB;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px 1px #c3c3c3;
+}
+.ticket>*{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.editButtons{
+    display: flex;
+    justify-content: space-around;
+}
+
+
+
+#btnTest{
+    font-size: 25px;
+    margin: 2rem;
+}

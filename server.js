@@ -15,4 +15,7 @@ app.use(express.json()); //imposto il tipo di file che voglio passare nel middle
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
+const adminRouter = require('./routes/admin');
+app.use('/admin', adminRouter);
+
 app.listen(process.env.DATABASE_PORT, () => console.log(`Server listening on port ${process.env.DATABASE_PORT}`));
