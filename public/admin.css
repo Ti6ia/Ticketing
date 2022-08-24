@@ -14,8 +14,9 @@ body{
 
 #dashboard{
     height: 100vh;
+    width: 100vw;
     display: grid;
-    grid-template-columns: 0.2fr minmax(600px, 1fr);
+    grid-template-columns: 0.22fr minmax(600px, 1fr);
 }
 
 .sideBar{
@@ -37,8 +38,9 @@ body{
 }
 
 .main{
+    height: 100vh;
     display: grid;
-    grid-template-rows: minmax(50px, 0.08fr) 0.9fr;
+    grid-template-rows: minmax(50px, 0.08fr) 1fr;
 }
 .header{
     display: flex;
@@ -47,6 +49,7 @@ body{
     padding-inline: 2rem;
     font-size: 25px;
     background-color: #FBFBFB;
+    z-index: 1;
     box-shadow: 5px 1px 8px 1px #888888;
 }
 #btnAddTicket{
@@ -86,7 +89,3 @@ body{
 
 
 
-#btnTest{
-    font-size: 25px;
-    margin: 2rem;
-}

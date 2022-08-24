@@ -7,7 +7,7 @@ const addTicketReq = async (obj) => {
         },
         body: JSON.stringify({ 
             name: obj.name,
-            secondName: obj.secondName,
+            lastName: obj.lastName,
             subject: obj.subject,
             store: obj.store,
             priority: obj.priority,
@@ -25,7 +25,7 @@ const submit = document.getElementById('submit');
 submit.addEventListener('click', () => {
     const newTicket = {
         name: document.getElementById("name").value,
-        secondName: document.getElementById("secondName").value,
+        lastName: document.getElementById("lastName").value,
         subject: document.getElementById("subject").value,
         store: document.getElementById("store").value,
         priority: document.getElementById("priority").value,

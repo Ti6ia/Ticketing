@@ -15,7 +15,7 @@ const getTicketList = async () => {
 }
 
 // give a ticket node for the DOM
-const ticketMaker = (newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
+const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
     // Ticket
     const ticket = document.createElement('div');
     ticket.classList.add('ticket');
@@ -55,11 +55,13 @@ const ticketMaker = (newName, newLastName, newSubject, newStore, newPriority, ne
     const editButtons = document.createElement('div');
     editButtons.classList.add('editButtons');
     // editTicket
-    const editTicket = document.createElement('div');
+    const editTicket = document.createElement('button');
+    editTicket.id = id;
     editTicket.classList.add('edit');
     editTicket.innerText = 'E';
     // deleteTicket
-    const deleteTicket = document.createElement('div');
+    const deleteTicket = document.createElement('button');
+    deleteTicket.id = id;
     deleteTicket.classList.add('delete');
     deleteTicket.innerText = 'D';
 
@@ -83,6 +85,7 @@ window.onload = async () => {
     const ticketsToShow = [];
     for(let i = 0; i < tempTicketList.length; i++){
         ticketsToShow.push(ticketMaker(
+            tempTicketList[i]._id, 
             tempTicketList[i].name, 
             tempTicketList[i].lastName,
             tempTicketList[i].subject,
@@ -93,7 +96,19 @@ window.onload = async () => {
         ));
         ticketList.appendChild(ticketsToShow[i]);
     }
+    console.log(ticketsToShow);
+    const buttonsDeleteTicket = document.querySelectorAll('.delete');
+    buttonsDeleteTicket.forEach((button) => {
+        button.addEventListener('click', async (e) => {
+            console.log(e.target.id);
+            const rawRes = await fetch('/admin/'+e.target.id, { method: 'DELETE' });
+            const res = await rawRes.json();
+            console.log('delete res:');
+            console.log(res);
+        });
+    })
 };
+
 
 
 

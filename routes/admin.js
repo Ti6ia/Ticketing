@@ -20,7 +20,7 @@ router.get('/getTicketList', async (req, res) => {
 router.post('/addTicket', async (req, res) => {
     const ticket = new Ticket({
         name: req.body.name,
-        secondName: req.body.secondName,
+        lastName: req.body.lastName,
         subject: req.body.subject,
         store: req.body.store,
         priority: req.body.priority,
@@ -36,5 +36,30 @@ router.post('/addTicket', async (req, res) => {
         res.status(400).json({ message: err.message }); // 400: bad data from client
     }
 });
+
+router.delete('/:id', getTicket, async (req, res) => {
+    try {
+        await res.ticket.remove();
+        res.json({ message: `Deleted ticket ${res.ticket.name}`});
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+async function getTicket(req, res, next){
+    let ticket;
+    try {
+        ticket = await Ticket.findById(req.params.id);
+        if(ticket == null){
+            return res.status(404).json({ message: 'Cannot find ticket' })
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+    res.ticket = ticket;
+    next();
+}
+
 
 module.exports = router;
