@@ -1,13 +1,28 @@
+require('dotenv').config() 
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const publicPath = path.join(__dirname, '../');
 const Ticket = require('../models/ticket');
 
+router.get('/getStoresList', (req, res) => {
+    storesList = process.env.STORES.split(',');
+    console.log(storesList);
+    res.send(storesList);
+});
+
+router.get('/getSubjectsList', (req, res) => {
+    subjectsList = JSON.parse(process.env.SUBJECTS);
+    console.log(subjectsList);
+    res.send(subjectsList);
+});
+
+// show dashbord
 router.get('/', (req, res) => {
     res.sendFile(path.join(publicPath + '/public/admin.html'));
 });
 
+// get all tickets
 router.get('/getTicketList', async (req, res) => {
     try {
         const tickets = await Ticket.find();
@@ -17,6 +32,12 @@ router.get('/getTicketList', async (req, res) => {
     }
 })
 
+// get one ticket
+router.get('/:id', getTicket, (req, res) => {
+    res.json(res.ticket);
+});
+
+// add ticket
 router.post('/addTicket', async (req, res) => {
     const ticket = new Ticket({
         name: req.body.name,
@@ -37,6 +58,38 @@ router.post('/addTicket', async (req, res) => {
     }
 });
 
+// edit ticket
+router.patch('/:id', getTicket, async (req, res) => {
+    if(req.body.name != null){
+        res.ticket.name = req.body.name;
+    }
+    if(req.body.secondName != null){
+        res.ticket.secondName = req.body.secondName;
+    }
+    if(req.body.subject != null){
+        res.ticket.subject = req.body.subject;
+    }
+    if(req.body.store != null){
+        res.ticket.store = req.body.store;
+    }
+    if(req.body.urgency != null){
+        res.ticket.urgency = req.body.urgency;
+    }
+    if(req.body.title != null){
+        res.ticket.title = req.body.title;
+    }
+    if(req.body.description != null){
+        res.ticket.description = req.body.description;
+    }
+    try {
+        const updatedTicket = await res.ticket.save();
+        res.json(updatedTicket);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// delete ticket
 router.delete('/:id', getTicket, async (req, res) => {
     try {
         await res.ticket.remove();
@@ -47,6 +100,7 @@ router.delete('/:id', getTicket, async (req, res) => {
 });
 
 
+// 'middleweare', to get a ticket in particular
 async function getTicket(req, res, next){
     let ticket;
     try {
@@ -58,7 +112,7 @@ async function getTicket(req, res, next){
         return res.status(500).json({ message: err.message });
     }
     res.ticket = ticket;
-    next();
+    next(); 
 }
 
 

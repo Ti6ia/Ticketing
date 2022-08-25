@@ -1,5 +1,6 @@
 require('dotenv').config() 
 const express = require('express'); 
+const router = express.Router();
 const mongoose = require('mongoose');
 
 const app = express();
@@ -11,6 +12,10 @@ db.on('error', (error) => console.error(error));
 db.once('open', () => console.log('Connected to database'));
 
 app.use(express.json()); //imposto il tipo di file che voglio passare nel middleweare
+
+router.get('/getStoresList', (req, res) => {
+    res.send('getStoresList');
+});
 
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);

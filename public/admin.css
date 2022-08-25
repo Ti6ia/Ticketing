@@ -54,6 +54,7 @@ body{
 }
 #btnAddTicket{
     font-size: 35px;
+    cursor: pointer;
 }
 
 #content{
@@ -72,6 +73,7 @@ body{
     height: 3.5rem;
     display: grid;
     grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 0.3fr;
+    padding-right: 0.8rem;
     font-size: 18px;
     background-color: #FBFBFB;
     border-radius: 5px;
@@ -86,6 +88,50 @@ body{
     display: flex;
     justify-content: space-around;
 }
+.editButtons * {
+    cursor: pointer;
+}
 
 
+.popup-delete{
+    width: 40%;
+    border: 1px solid salmon;
+    background-color: #fff;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 5;
+    /* visibility: hidden; */
+    /* transition: transform 1s; */
+}
+/* .open-popup{
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+} */
 
+.popup-ticket{
+    width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+}
+.popup-ticket * {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.popup-buttons{
+    display: flex;
+    gap: 2rem;
+}
+.popup-buttons *{
+    height: 2rem;
+    width: 3rem;
+}
