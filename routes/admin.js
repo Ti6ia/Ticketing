@@ -6,7 +6,7 @@ const publicPath = path.join(__dirname, '../');
 const Ticket = require('../models/ticket');
 
 router.get('/getStoresList', (req, res) => {
-    storesList = process.env.STORES.split(',');
+    storesList = JSON.parse(process.env.STORES);
     console.log(storesList);
     res.send(storesList);
 });
@@ -63,8 +63,8 @@ router.patch('/:id', getTicket, async (req, res) => {
     if(req.body.name != null){
         res.ticket.name = req.body.name;
     }
-    if(req.body.secondName != null){
-        res.ticket.secondName = req.body.secondName;
+    if(req.body.lastName != null){
+        res.ticket.lastName = req.body.lastName;
     }
     if(req.body.subject != null){
         res.ticket.subject = req.body.subject;
@@ -72,13 +72,13 @@ router.patch('/:id', getTicket, async (req, res) => {
     if(req.body.store != null){
         res.ticket.store = req.body.store;
     }
-    if(req.body.urgency != null){
-        res.ticket.urgency = req.body.urgency;
+    if(req.body.priority != null){
+        res.ticket.priority = req.body.priority;
     }
     if(req.body.title != null){
         res.ticket.title = req.body.title;
     }
-    if(req.body.description != null){
+    if(req.body.description != ""){
         res.ticket.description = req.body.description;
     }
     try {

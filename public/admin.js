@@ -13,7 +13,6 @@ const getStoresList = async () => {
     const res = rawRes.json();
     return res;
 }
-
 // get subjects list
 const getSubjectsList = async () => {
     const rawRes = await fetch('/admin/getSubjectsList');
@@ -35,8 +34,114 @@ const getTicketByID = async (id) => {
     return res;
 }
 
+// add ticket
+const addTicketReq = async (obj) => {
+    const rawRes = await fetch('admin/addTicket', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            name: obj.name,
+            lastName: obj.lastName,
+            subject: obj.subject,
+            store: obj.store,
+            priority: obj.priority,
+            title: obj.title,
+            description: obj.description
+        })
+    });
+    const res = await rawRes.json();
+    console.log('New Ticket added correctly');
+};
 
-// give a ticket node for the DOM
+const editTicketReq = async (obj, currentTicketID) => {
+    console.log(obj);
+    const rawRes = await fetch('/admin/'+currentTicketID, { 
+        method: 'PATCH',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            name: obj.name,
+            lastName: obj.lastName,
+            subject: obj.subject,
+            store: obj.store,
+            priority: obj.priority,
+            title: obj.title,
+            description: obj.description
+        })
+    });
+    const res = await rawRes.json();
+    console.log('Ticket updated correctly');
+    return res;
+}
+
+
+//  DIV MAKERS
+// returns div.popup-form-row
+const formRowMaker = () => {
+    let row = document.createElement('div');
+    row.classList.add('popup-form-row');
+    return row;
+}
+//returns label.text
+const formLabelMaker = (name) => {
+    const label = document.createElement('label');
+    label.classList.add('text');
+    label.innerText = name;
+    return label;
+}
+// returns input
+const formInputMaker = (id, value = '') => {
+    const input = document.createElement('input');
+    input.id = id;
+    input.setAttribute("type", "text");
+    input.value = value;
+    return input;
+}
+// returns options
+const formOptionMaker = (value, text) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.innerText = text;
+    return option;
+}
+// returns select
+const formSelectMaker = (id, options, selected = 'culo') => {  // options === object
+    const select = document.createElement('select');
+    select.id = id;
+    for(const property in options){
+        let newOption = formOptionMaker(property, options[property]);
+        if(newOption.value == selected){
+            newOption.selected = true;
+        }
+        select.appendChild(newOption);
+    }
+    return select;
+}
+// return textarea
+const formTextareaMaker = (id, value = '', cols, rows) => {
+    const textarea = document.createElement('textarea');
+    textarea.id = id;
+    textarea.placeholder = value;
+    textarea.cols = cols;
+    textarea.rows = rows;
+    return textarea;
+}
+// return button
+const formButtonMaker = (id, name) => {
+    const button = document.createElement('button');
+    button.id = id;
+    button.innerText = name;
+    return button;
+}
+
+
+
+// return dom ticket to show
 const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
     // Ticket
     const ticket = document.createElement('div');
@@ -101,12 +206,148 @@ const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority
     return ticket;
 } 
 
+// return dom popup for ADD a ticket
+const addPopupMaker = async () => {
+    // popup
+    const popup = document.createElement('div');
+    popup.classList.add('popup');
+
+    // h2
+    const h2 = document.createElement('h2');
+    h2.innerText = 'Aggiungi un nuovo ticket:';
+
+    // form container (.popup-add-ticket)
+    const formContainer = document.createElement('div');
+    formContainer.classList.add('popup-add-ticket');
+    // name
+    const name = formRowMaker();
+    name.appendChild(formLabelMaker('Name'));
+    name.appendChild(formInputMaker('name'));
+    // lastName
+    const lastName = formRowMaker();
+    lastName.appendChild(formLabelMaker('Last Name'));
+    lastName.appendChild(formInputMaker('lastName'));
+    // subjects
+    const subject = formRowMaker();
+    subject.appendChild(formLabelMaker('Subject'));
+    subject.appendChild(formSelectMaker('subject', await getSubjectsList())); 
+    // store
+    const store = formRowMaker();
+    store.appendChild(formLabelMaker('Store'));
+    store.appendChild(formSelectMaker('store', await getStoresList())); 
+    // priority
+    const priority = formRowMaker();
+    priority.appendChild(formLabelMaker('Priority'));
+    priority.appendChild(formSelectMaker('priority', {
+        high: "high",
+        medium: "medium",
+        low: "low"
+    })); 
+    // title
+    const title = formRowMaker();
+    title.appendChild(formLabelMaker('Title'));
+    title.appendChild(formInputMaker('title'));
+    // description
+    const description = formRowMaker();
+    description.appendChild(formLabelMaker('Description'));
+    description.appendChild(formTextareaMaker('description', '', 30, 5));
+    // btnAddTicket
+    const buttonsRow = formRowMaker();
+    buttonsRow.appendChild(formButtonMaker('buttonAddTicket', 'Aggiungi ticket'));
+    buttonsRow.appendChild(formButtonMaker('buttonCancel', 'Annulla'));
+
+    formContainer.appendChild(name);
+    formContainer.appendChild(lastName);
+    formContainer.appendChild(subject);
+    formContainer.appendChild(store);
+    formContainer.appendChild(priority);
+    formContainer.appendChild(title);
+    formContainer.appendChild(description);
+    formContainer.appendChild(buttonsRow);
+
+    popup.appendChild(h2);
+    popup.appendChild(formContainer);
+
+    return popup;
+}
+
+// return dom popup for EDIT a ticket
+const editPopupMaker = async (id) => {
+    console.log('appena dentro editPopupMaker')
+    const givenTicket = await getTicketByID(id);
+    console.log('givenTicket'); 
+    console.log(givenTicket); 
+
+    // popup
+    const popup = document.createElement('div');
+    popup.classList.add('popup');
+
+    // h2
+    const h2 = document.createElement('h2');
+    h2.innerText = 'Modifica:';
+
+    // form container (.popup-add-ticket)
+    const formContainer = document.createElement('div');
+    formContainer.classList.add('popup-add-ticket');
+    // name
+    const name = formRowMaker();
+    name.appendChild(formLabelMaker('Name'));
+    name.appendChild(formInputMaker('name', givenTicket.name));
+    // lastName
+    const lastName = formRowMaker();
+    lastName.appendChild(formLabelMaker('Last Name'));
+    lastName.appendChild(formInputMaker('lastName', givenTicket.lastName));
+    // subjects
+    const subject = formRowMaker();
+    subject.appendChild(formLabelMaker('Subject'));
+    subject.appendChild(formSelectMaker('subject', await getSubjectsList(), givenTicket.subject)); 
+    // store
+    const store = formRowMaker();
+    store.appendChild(formLabelMaker('Store'));
+    store.appendChild(formSelectMaker('store', await getStoresList(), givenTicket.store)); 
+    // priority
+    const priority = formRowMaker();
+    priority.appendChild(formLabelMaker('Priority'));
+    priority.appendChild(formSelectMaker('priority', {
+        high: "high",
+        medium: "medium",
+        low: "low"
+    }, givenTicket.priority)); 
+    // title
+    const title = formRowMaker();
+    title.appendChild(formLabelMaker('Title'));
+    title.appendChild(formInputMaker('title', givenTicket.title));
+    // description
+    const description = formRowMaker();
+    description.appendChild(formLabelMaker('Description'));
+    description.appendChild(formTextareaMaker('description', givenTicket.description, 30, 5));
+    // btnAddTicket
+    const buttonsRow = formRowMaker();
+    buttonsRow.appendChild(formButtonMaker('buttonEditTicket', 'Aggiorna ticket'));
+    buttonsRow.appendChild(formButtonMaker('buttonCancel', 'Annulla'));
+
+    formContainer.appendChild(name);
+    formContainer.appendChild(lastName);
+    formContainer.appendChild(subject);
+    formContainer.appendChild(store);
+    formContainer.appendChild(priority);
+    formContainer.appendChild(title);
+    formContainer.appendChild(description);
+    formContainer.appendChild(buttonsRow);
+
+    popup.appendChild(h2);
+    popup.appendChild(formContainer);
+
+    return popup;
+}
+
+// return dom popup for DELETE a ticket
 const deletePopupMaker = async (id) => {
     const givenTicket = await getTicketByID(id);
 
     // popup
     const popup = document.createElement('div');
-    popup.classList.add('popup-delete');
+    popup.classList.add('popup');
 
     // h1
     const h2 = document.createElement('h2');
@@ -114,7 +355,7 @@ const deletePopupMaker = async (id) => {
 
     //ticket div
     const popupTicket = document.createElement('div');
-    popupTicket.classList.add('popup-ticket')
+    popupTicket.classList.add('popup-show-ticket')
     // nameLabel
     const nameLabel = document.createElement('div');
     nameLabel.innerText = 'Name : ';
@@ -195,7 +436,9 @@ const deletePopupMaker = async (id) => {
     return popup;
 }
 
-// when the page load show all the ticket from DB
+
+
+// when the page load:
 window.onload = async () => {
     // get all tickets
     const tempTicketList = await getTicketList();
@@ -219,8 +462,30 @@ window.onload = async () => {
 
     //setup add button
     const buttonAddTicket = document.getElementById('btnAddTicket');
-    buttonAddTicket.addEventListener('click', () => {
-        console.log('btnAddTicket');
+    buttonAddTicket.addEventListener('click', async () => {
+        const currentPopupAddTicket = await addPopupMaker();
+        body.appendChild(currentPopupAddTicket);
+
+        const buttonAddTicket = document.getElementById('buttonAddTicket');
+        buttonAddTicket.addEventListener('click', () => {
+            const newTicket = {
+                name: document.getElementById("name").value,
+                lastName: document.getElementById("lastName").value,
+                subject: document.getElementById("subject").value,
+                store: document.getElementById("store").value,
+                priority: document.getElementById("priority").value,
+                title: document.getElementById("title").value,
+                description: document.getElementById("description").value
+            }
+            addTicketReq(newTicket);
+            body.removeChild(currentPopupAddTicket);
+            location.reload();
+        })
+
+        const buttonCancel = document.getElementById('buttonCancel');
+        buttonCancel.addEventListener('click', () => {
+            body.removeChild(currentPopupAddTicket);
+        })
     });
 
     // setup delete buttons
@@ -249,32 +514,50 @@ window.onload = async () => {
     })
 
     // setup edit buttons
-    // const buttonsEditTicket = document.querySelectorAll('.edit');
-    // buttonsEditTicket.forEach((button) => {
-    //     button.addEventListener('click', async (e) => {
-    //         console.log(e.target.id);
-    //         const rawRes = await fetch('/admin/'+e.target.id, { 
-    //             method: 'PATCH',
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: { 
-    //                 // da aggiungere voce da modificare
-    //             }
-    //         });
-    //         const res = await rawRes.json();
-    //         console.log('edit res:');
-    //         console.log(res);
-    //     });
-    // });
+    const buttonsEditTicket = document.querySelectorAll('.edit');
+    buttonsEditTicket.forEach((button) => {
+        button.addEventListener('click', async (e) => {
+            const currentTicketID = e.target.id;
+            const currentPopupEditTicket = await editPopupMaker(currentTicketID);
+            body.appendChild(currentPopupEditTicket);
+
+            const buttonEditTicket = document.getElementById('buttonEditTicket');
+            buttonEditTicket.addEventListener('click', async () => {
+                const newTicket = {
+                    name: document.getElementById("name").value,
+                    lastName: document.getElementById("lastName").value,
+                    subject: document.getElementById("subject").value,
+                    store: document.getElementById("store").value,
+                    priority: document.getElementById("priority").value,
+                    title: document.getElementById("title").value,
+                    description: document.getElementById("description").value
+                }
+                const res = await editTicketReq(newTicket, currentTicketID);
+                console.log(res);
+                body.removeChild(currentPopupEditTicket);
+                // location.reload();
+            })
+
+            const buttonCancel = document.getElementById('buttonCancel');
+            buttonCancel.addEventListener('click', () => {
+                body.removeChild(currentPopupEditTicket);
+            })
+
+            // console.log(e.target.id);
+            // const rawRes = await fetch('/admin/'+e.target.id, { 
+            //     method: 'PATCH',
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: { 
+            //         // da aggiungere voce da modificare
+            //     }
+            // });
+            // const res = await rawRes.json();
+            // console.log('edit res:');
+            // console.log(res);
+        });
+    });
 
 };
-
-
-
-
-
-
-
-
