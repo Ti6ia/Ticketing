@@ -20,6 +20,7 @@ const getSubjectsList = async () => {
     return res;
 }
 
+
 // get all the tickets from DB
 const getTicketList = async () => {
     const rawRes = await fetch('/admin/getTicketList');
@@ -56,6 +57,7 @@ const addTicketReq = async (obj) => {
     console.log('New Ticket added correctly');
 };
 
+// edit ticket
 const editTicketReq = async (obj, currentTicketID) => {
     console.log(obj);
     const rawRes = await fetch('/admin/'+currentTicketID, { 
@@ -81,7 +83,7 @@ const editTicketReq = async (obj, currentTicketID) => {
 
 
 //  DIV MAKERS
-// returns div.popup-form-row
+// returns div.popup-form-row (rows)
 const formRowMaker = () => {
     let row = document.createElement('div');
     row.classList.add('popup-form-row');
@@ -141,14 +143,21 @@ const formButtonMaker = (id, name) => {
 
 
 
-// return dom ticket to show
+// return node ticketList's ticket to show
 const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
+    // Ticket Container
+    const ticketContainer = document.createElement('div');
+    ticketContainer.classList.add('ticketContainer');
+    // dropDownTicket
+    const dropDownTicket = document.createElement('div');
+    dropDownTicket.classList.add('dropDownTicket');
     // Ticket
     const ticket = document.createElement('div');
     ticket.classList.add('ticket');
     // drop
     const drop = document.createElement('div');
     drop.classList.add('drop');
+    drop.setAttribute('data-opened', 'false');
     drop.innerText = 'V';
     // name
     const name = document.createElement('div');
@@ -203,10 +212,16 @@ const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority
     ticket.appendChild(priority);
     ticket.appendChild(editButtons);
 
-    return ticket;
+    dropDownTicket.appendChild(title);
+    dropDownTicket.appendChild(description);
+
+    ticketContainer.appendChild(ticket);
+    ticketContainer.appendChild(dropDownTicket);
+
+    return ticketContainer;
 } 
 
-// return dom popup for ADD a ticket
+// return node popup for ADD a ticket
 const addPopupMaker = async () => {
     // popup
     const popup = document.createElement('div');
@@ -271,7 +286,7 @@ const addPopupMaker = async () => {
     return popup;
 }
 
-// return dom popup for EDIT a ticket
+// return node popup for EDIT a ticket
 const editPopupMaker = async (id) => {
     console.log('appena dentro editPopupMaker')
     const givenTicket = await getTicketByID(id);
@@ -341,7 +356,7 @@ const editPopupMaker = async (id) => {
     return popup;
 }
 
-// return dom popup for DELETE a ticket
+// return node popup for DELETE a ticket
 const deletePopupMaker = async (id) => {
     const givenTicket = await getTicketByID(id);
 
@@ -438,7 +453,7 @@ const deletePopupMaker = async (id) => {
 
 
 
-// when the page load:
+// (MAIN) when the page load:
 window.onload = async () => {
     // get all tickets
     const tempTicketList = await getTicketList();
@@ -488,31 +503,6 @@ window.onload = async () => {
         })
     });
 
-    // setup delete buttons
-    const buttonsDeleteTicket = document.querySelectorAll('.delete');
-    buttonsDeleteTicket.forEach((button) => {
-        button.addEventListener('click', async (e) => {
-            const currentTicketID = e.target.id;
-            let currentPopupDelete = await deletePopupMaker(currentTicketID);
-            body.appendChild(currentPopupDelete);
-
-            const btnYes = document.getElementById('btnYes');
-            btnYes.addEventListener('click', async () => {
-                const rawRes = await fetch('/admin/'+currentTicketID, { method: 'DELETE' });
-                const res = await rawRes.json();
-                console.log('delete res:');
-                console.log(res);
-                body.removeChild(currentPopupDelete);
-                location.reload();
-            })
-
-            const btnNo = document.getElementById('btnNo');
-            btnNo.addEventListener('click', () => {
-                body.removeChild(currentPopupDelete);
-            })
-        });
-    })
-
     // setup edit buttons
     const buttonsEditTicket = document.querySelectorAll('.edit');
     buttonsEditTicket.forEach((button) => {
@@ -542,22 +532,52 @@ window.onload = async () => {
             buttonCancel.addEventListener('click', () => {
                 body.removeChild(currentPopupEditTicket);
             })
-
-            // console.log(e.target.id);
-            // const rawRes = await fetch('/admin/'+e.target.id, { 
-            //     method: 'PATCH',
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: { 
-            //         // da aggiungere voce da modificare
-            //     }
-            // });
-            // const res = await rawRes.json();
-            // console.log('edit res:');
-            // console.log(res);
         });
     });
 
+    // setup delete buttons
+    const buttonsDeleteTicket = document.querySelectorAll('.delete');
+    buttonsDeleteTicket.forEach((button) => {
+        button.addEventListener('click', async (e) => {
+            const currentTicketID = e.target.id;
+            let currentPopupDelete = await deletePopupMaker(currentTicketID);
+            body.appendChild(currentPopupDelete);
+
+            const btnYes = document.getElementById('btnYes');
+            btnYes.addEventListener('click', async () => {
+                const rawRes = await fetch('/admin/'+currentTicketID, { method: 'DELETE' });
+                const res = await rawRes.json();
+                console.log('delete res:');
+                console.log(res);
+                body.removeChild(currentPopupDelete);
+                location.reload();
+            })
+
+            const btnNo = document.getElementById('btnNo');
+            btnNo.addEventListener('click', () => {
+                body.removeChild(currentPopupDelete);
+            })
+        });
+    })
+
+    // setup dropdown buttons
+    const buttonsDropdown = document.querySelectorAll('.drop');
+    buttonsDropdown.forEach((button) => {
+        button.addEventListener('click', (e) => {
+            const drop = e.target;
+            let isOpened = drop.attributes[1].value;
+            const node_father = e.path[2];
+            const node_dropdown = node_father.lastChild;
+            if(isOpened == 'false'){
+                drop.attributes[1].value = 'true';
+                node_dropdown.classList.add('showDropDownTicket');
+            } else if(isOpened == 'true'){
+                drop.attributes[1].value = 'false';
+                node_dropdown.classList.remove('showDropDownTicket');
+            } else {
+                console.log('wuuuuutt');
+            }
+            
+        })
+    })
 };

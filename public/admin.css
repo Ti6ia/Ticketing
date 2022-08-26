@@ -73,10 +73,12 @@ body{
     height: 3.5rem;
     display: grid;
     grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 0.3fr;
+    grid-template-rows: 3.5rem ;
     padding-right: 0.8rem;
     font-size: 18px;
     background-color: #FBFBFB;
     border-radius: 5px;
+    z-index: 2;
     box-shadow: 1px 1px 4px 1px #c3c3c3;
 }
 .ticket>*{
@@ -89,6 +91,29 @@ body{
     justify-content: space-around;
 }
 .editButtons * {
+    cursor: pointer;
+}
+.dropDownTicket{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem;
+    position: relative;
+    top: -5px;
+    z-index: 0;
+    background-color: #FBFBFB;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px 1px #c3c3c3;
+    background-color: rgb(255, 255, 255);
+    display: none;
+}
+.showDropDownTicket{
+    display: block !important;
+}
+.drop{
     cursor: pointer;
 }
 
