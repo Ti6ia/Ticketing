@@ -29,18 +29,20 @@ body{
 .sideBarItem{
     font-size: 20px;
     padding-left: 1rem;
+    cursor: pointer;
 }
 
 #logo{
     font-size: 32px;
     font-weight: 700;
     margin: 2rem 1rem 2rem 1rem;
+    cursor: pointer;
 }
 
 .main{
     height: 100vh;
     display: grid;
-    grid-template-rows: minmax(50px, 0.08fr) 1fr;
+    grid-template-rows: minmax(50px, 0.1fr) 1fr;
 }
 .header{
     display: flex;
@@ -53,7 +55,7 @@ body{
     box-shadow: 5px 1px 8px 1px #888888;
 }
 #btnAddTicket{
-    font-size: 35px;
+    font-size: 27px;
     cursor: pointer;
 }
 
@@ -74,7 +76,7 @@ body{
     display: grid;
     grid-template-columns: 0.2fr 1fr 1fr 1fr 1fr 1fr 0.3fr;
     grid-template-rows: 3.5rem ;
-    padding-right: 0.8rem;
+    padding-inline: 0.8rem;
     font-size: 18px;
     background-color: #FBFBFB;
     border-radius: 5px;
@@ -88,7 +90,8 @@ body{
 }
 .editButtons{
     display: flex;
-    justify-content: space-around;
+    gap: 0.5rem;
+
 }
 .editButtons * {
     cursor: pointer;

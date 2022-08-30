@@ -32,6 +32,36 @@ router.get('/getTicketList', async (req, res) => {
     }
 })
 
+// get priority:"high" tickets
+router.get('/getHighPriorityTickets', async (req, res) => {
+    try {
+        const tickets = await Ticket.find({ priority:"high" });
+        res.json(tickets);
+    } catch (err) {
+        res.status(500).json({ message: err.message }); // 500: error on server
+    }
+})
+
+// get priority:"medium" tickets
+router.get('/getMediumPriorityTickets', async (req, res) => {
+    try {
+        const tickets = await Ticket.find({ priority:"medium" });
+        res.json(tickets);
+    } catch (err) {
+        res.status(500).json({ message: err.message }); // 500: error on server
+    }
+})
+
+// get priority:"low" tickets
+router.get('/getLowPriorityTickets', async (req, res) => {
+    try {
+        const tickets = await Ticket.find({ priority:"low" });
+        res.json(tickets);
+    } catch (err) {
+        res.status(500).json({ message: err.message }); // 500: error on server
+    }
+})
+
 // get one ticket
 router.get('/:id', getTicket, (req, res) => {
     res.json(res.ticket);

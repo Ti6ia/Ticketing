@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.0.0/css/all.css">
     <link rel="stylesheet" href="admin.css">
     <script defer src="admin.js"></script>
     <title>Dashboard</title>
@@ -12,16 +13,16 @@
     <main id="dashboard">
         <div class="sideBar">
             <div id="logo">Ticketing</div>
-            <div class="sideBarItem">All tickets</div>
-            <div class="sideBarItem">Closed tickets</div>
-            <div class="sideBarItem">Priority: High</div>
-            <div class="sideBarItem">Priority: Medium</div>
-            <div class="sideBarItem">Priority: Low</div>
+            <div id="allTickets" class="sideBarItem">All tickets</div>
+            <div id="closedTickets" class="sideBarItem">Closed tickets</div>
+            <div id="highPriority" class="sideBarItem">Priority: High</div>
+            <div id="mediumPriority" class="sideBarItem">Priority: Medium</div>
+            <div id="lowPriority" class="sideBarItem">Priority: Low</div>
         </div>
         <div class="main">
             <div class="header">
-                <div id="path">Ticket</div>
-                <div id="btnAddTicket">+</div>
+                <div id="path">All Tickets</div>
+                <i id="btnAddTicket" class="fa-solid fa-plus"></i>
             </div>
             <div id="content">
                 <div id="ticketList">

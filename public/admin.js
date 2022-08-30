@@ -28,6 +28,27 @@ const getTicketList = async () => {
     return res;
 }
 
+// get priority:"high" tickets from DB
+const getHighPriorityTickets = async () => {
+    const rawRes = await fetch('/admin/getHighPriorityTickets');
+    const res = await rawRes.json();
+    return res;
+}
+
+// get priority:"medium" tickets from DB
+const getMediumPriorityTickets = async () => {
+    const rawRes = await fetch('/admin/getMediumPriorityTickets');
+    const res = await rawRes.json();
+    return res;
+}
+
+// get priority:"low" tickets from DB
+const getLowPriorityTickets = async () => {
+    const rawRes = await fetch('/admin/getLowPriorityTickets');
+    const res = await rawRes.json();
+    return res;
+}
+
 //get one ticket by ID
 const getTicketByID = async (id) => {
     const rawRes = await fetch('/admin/'+id);
@@ -144,7 +165,7 @@ const formButtonMaker = (id, name) => {
 
 
 // return node ticketList's ticket to show
-const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
+const ticketMaker = ( newTicket ) => {
     // Ticket Container
     const ticketContainer = document.createElement('div');
     ticketContainer.classList.add('ticketContainer');
@@ -155,51 +176,48 @@ const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority
     const ticket = document.createElement('div');
     ticket.classList.add('ticket');
     // drop
-    const drop = document.createElement('div');
-    drop.classList.add('drop');
+    const drop = document.createElement('i');
+    drop.classList.add('drop', 'fa-solid', 'fa-caret-down');
     drop.setAttribute('data-opened', 'false');
-    drop.innerText = 'V';
     // name
     const name = document.createElement('div');
     name.classList.add('name');
-    name.innerText = newName;
+    name.innerText = newTicket.name;
     // lastName
     const lastName = document.createElement('div');
     lastName.classList.add('lastName');
-    lastName.innerText = newLastName;
+    lastName.innerText = newTicket.lastName;
     // subject
     const subject = document.createElement('div');
     subject.classList.add('subject');
-    subject.innerText = newSubject;
+    subject.innerText = newTicket.subject;
     // store
     const store = document.createElement('div');
     store.classList.add('store');
-    store.innerText = newStore;
+    store.innerText = newTicket.store;
     // priority
     const priority = document.createElement('div');
     priority.classList.add('priority');
-    priority.innerText = newPriority;
+    priority.innerText = newTicket.priority;
     // title
     const title = document.createElement('div');
     title.classList.add('title');
-    title.innerText = newTitle;
+    title.innerText = newTicket.title;
     // description
     const description = document.createElement('div');
     description.classList.add('description');
-    description.innerText = newDescription;
+    description.innerText = newTicket.description;
     // editButtons
     const editButtons = document.createElement('div');
     editButtons.classList.add('editButtons');
     // editTicket
-    const editTicket = document.createElement('button');
-    editTicket.id = id;
-    editTicket.classList.add('edit');
-    editTicket.innerText = 'E';
+    const editTicket = document.createElement('i');
+    editTicket.id = newTicket._id;
+    editTicket.classList.add('edit', 'fas', 'fa-edit');
     // deleteTicket
-    const deleteTicket = document.createElement('button');
-    deleteTicket.id = id;
-    deleteTicket.classList.add('delete');
-    deleteTicket.innerText = 'D';
+    const deleteTicket = document.createElement('i');
+    deleteTicket.id = newTicket._id;
+    deleteTicket.classList.add('delete', 'fa-regular', 'fa-trash-can');
 
     editButtons.appendChild(editTicket);
     editButtons.appendChild(deleteTicket);
@@ -452,30 +470,17 @@ const deletePopupMaker = async (id) => {
 }
 
 
-
-// (MAIN) when the page load:
-window.onload = async () => {
-    // get all tickets
-    const tempTicketList = await getTicketList();
-    console.log(tempTicketList);
-
-    // print all tickets
-    const ticketsToShow = [];
-    for(let i = 0; i < tempTicketList.length; i++){
-        ticketsToShow.push(ticketMaker(
-            tempTicketList[i]._id, 
-            tempTicketList[i].name, 
-            tempTicketList[i].lastName,
-            tempTicketList[i].subject,
-            tempTicketList[i].store,
-            tempTicketList[i].priority,
-            tempTicketList[i].title,
-            tempTicketList[i].description
-        ));
-        ticketList.appendChild(ticketsToShow[i]);
+// removes all the child from a node
+const childRemover = (node) => {
+    while( node.hasChildNodes() ){
+        node.removeChild(node.lastChild);
     }
+}
 
-    //setup add button
+
+
+//setup add button
+const setupAddButton = () => {
     const buttonAddTicket = document.getElementById('btnAddTicket');
     buttonAddTicket.addEventListener('click', async () => {
         const currentPopupAddTicket = await addPopupMaker();
@@ -502,8 +507,9 @@ window.onload = async () => {
             body.removeChild(currentPopupAddTicket);
         })
     });
-
-    // setup edit buttons
+}
+// setup edit buttons
+const setupEditButtons = () => {
     const buttonsEditTicket = document.querySelectorAll('.edit');
     buttonsEditTicket.forEach((button) => {
         button.addEventListener('click', async (e) => {
@@ -525,6 +531,7 @@ window.onload = async () => {
                 const res = await editTicketReq(newTicket, currentTicketID);
                 console.log(res);
                 body.removeChild(currentPopupEditTicket);
+                location.reload();
                 // location.reload();
             })
 
@@ -534,8 +541,9 @@ window.onload = async () => {
             })
         });
     });
-
-    // setup delete buttons
+}
+// setup delete buttons
+const setupDeleteButtons = () => {
     const buttonsDeleteTicket = document.querySelectorAll('.delete');
     buttonsDeleteTicket.forEach((button) => {
         button.addEventListener('click', async (e) => {
@@ -558,9 +566,10 @@ window.onload = async () => {
                 body.removeChild(currentPopupDelete);
             })
         });
-    })
-
-    // setup dropdown buttons
+    });
+}
+// setup dropdown buttons
+const setupDropdownButtons = () => {
     const buttonsDropdown = document.querySelectorAll('.drop');
     buttonsDropdown.forEach((button) => {
         button.addEventListener('click', (e) => {
@@ -570,14 +579,200 @@ window.onload = async () => {
             const node_dropdown = node_father.lastChild;
             if(isOpened == 'false'){
                 drop.attributes[1].value = 'true';
+                drop.classList.remove('fa-caret-down');
+                drop.classList.add('fa-caret-up');
                 node_dropdown.classList.add('showDropDownTicket');
             } else if(isOpened == 'true'){
                 drop.attributes[1].value = 'false';
+                drop.classList.remove('fa-caret-up');
+                drop.classList.add('fa-caret-down');
                 node_dropdown.classList.remove('showDropDownTicket');
             } else {
                 console.log('wuuuuutt');
             }
-            
-        })
-    })
+        });
+    });
+}
+//setup Event Listeners
+const setupEventListeners = () => {
+    setupAddButton();
+    setupEditButtons();
+    setupDeleteButtons();
+    setupDropdownButtons();
+}
+
+
+// (MAIN) when the page loads:
+window.onload = async () => {
+
+    // query to load on screen
+    let currentQuery = process.env.QUERY;
+    currentQuery = 'highTickets';
+
+    // DEFAULT: get all tickets
+    const tempTicketList = await getTicketList();
+    
+    // print all tickets (By Default)
+    for(let i = 0; i < tempTicketList.length; i++){
+        ticketList.appendChild(ticketMaker(tempTicketList[i]));
+    }
+    setupEventListeners();
+
+    // setup logo to home button
+    const logo = document.getElementById('logo');
+    logo.addEventListener('click', () => {
+        pathName.innerText = 'All Tickets';
+        childRemover(ticketList);
+        for (let i = 0; i < tempTicketList.length; i++) {
+            ticketList.appendChild(ticketMaker(tempTicketList[i]));
+        }
+        setupEventListeners();
+    });
+
+    // setup All Tickets button
+    const btnAllTickets = document.getElementById('allTickets');
+    btnAllTickets.addEventListener('click', () => {
+        pathName.innerText = 'All Tickets';
+        childRemover(ticketList);
+        for(let i = 0; i < tempTicketList.length; i++){
+            ticketList.appendChild(ticketMaker(tempTicketList[i]));
+        }
+        setupEventListeners();
+    });
+
+    // setup Priority: High button
+    const tempHighPriorityTicketList = await getHighPriorityTickets();
+    const btnHighPriority = document.getElementById('highPriority'); 
+    btnHighPriority.addEventListener('click', () => {
+        pathName.innerText = 'High Priority Tickets';
+        childRemover(ticketList);
+        for(let i = 0; i < tempHighPriorityTicketList.length; i++){
+            ticketList.appendChild(ticketMaker(tempHighPriorityTicketList[i]));
+        }
+        setupEventListeners();
+    });
+
+    // setup Priority: Medium button
+    const tempMediumPriorityTicketList = await getMediumPriorityTickets();
+    const btnMediumPriority = document.getElementById('mediumPriority'); 
+    btnMediumPriority.addEventListener('click', (e) => {
+        pathName.innerText = 'Medium Priority Tickets';
+        childRemover(ticketList);
+        for(let i = 0; i < tempMediumPriorityTicketList.length; i++){
+            ticketList.appendChild(ticketMaker(tempMediumPriorityTicketList[i]));
+        }
+        setupEventListeners();
+    });
+
+    // setup Priority: Low button
+    const tempLowPriorityTicketList = await getLowPriorityTickets();
+    const btnLowPriority = document.getElementById('lowPriority'); 
+    btnLowPriority.addEventListener('click', (e) => {
+        pathName.innerText = 'Low Priority Tickets';
+        childRemover(ticketList);
+        for(let i = 0; i < tempLowPriorityTicketList.length; i++){
+            ticketList.appendChild(ticketMaker(tempLowPriorityTicketList[i]));
+        }
+        setupEventListeners();
+    });
+    
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+// return node ticketList's ticket to show
+// const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
+//     // Ticket Container
+//     const ticketContainer = document.createElement('div');
+//     ticketContainer.classList.add('ticketContainer');
+//     // dropDownTicket
+//     const dropDownTicket = document.createElement('div');
+//     dropDownTicket.classList.add('dropDownTicket');
+//     // Ticket
+//     const ticket = document.createElement('div');
+//     ticket.classList.add('ticket');
+//     // drop
+//     const drop = document.createElement('i');
+//     drop.classList.add('drop', 'fa-solid', 'fa-caret-down');
+//     drop.setAttribute('data-opened', 'false');
+//     // name
+//     const name = document.createElement('div');
+//     name.classList.add('name');
+//     name.innerText = newName;
+//     // lastName
+//     const lastName = document.createElement('div');
+//     lastName.classList.add('lastName');
+//     lastName.innerText = newLastName;
+//     // subject
+//     const subject = document.createElement('div');
+//     subject.classList.add('subject');
+//     subject.innerText = newSubject;
+//     // store
+//     const store = document.createElement('div');
+//     store.classList.add('store');
+//     store.innerText = newStore;
+//     // priority
+//     const priority = document.createElement('div');
+//     priority.classList.add('priority');
+//     priority.innerText = newPriority;
+//     // title
+//     const title = document.createElement('div');
+//     title.classList.add('title');
+//     title.innerText = newTitle;
+//     // description
+//     const description = document.createElement('div');
+//     description.classList.add('description');
+//     description.innerText = newDescription;
+//     // editButtons
+//     const editButtons = document.createElement('div');
+//     editButtons.classList.add('editButtons');
+//     // editTicket
+//     const editTicket = document.createElement('i');
+//     editTicket.id = id;
+//     editTicket.classList.add('edit', 'fas', 'fa-edit');
+//     // deleteTicket
+//     const deleteTicket = document.createElement('i');
+//     deleteTicket.id = id;
+//     deleteTicket.classList.add('delete', 'fa-regular', 'fa-trash-can');
+
+//     editButtons.appendChild(editTicket);
+//     editButtons.appendChild(deleteTicket);
+
+//     ticket.appendChild(drop);
+//     ticket.appendChild(name);
+//     ticket.appendChild(lastName);
+//     ticket.appendChild(subject);
+//     ticket.appendChild(store);
+//     ticket.appendChild(priority);
+//     ticket.appendChild(editButtons);
+
+//     dropDownTicket.appendChild(title);
+//     dropDownTicket.appendChild(description);
+
+//     ticketContainer.appendChild(ticket);
+//     ticketContainer.appendChild(dropDownTicket);
+
+//     return ticketContainer;
+// } 
+
+
+// ticketsToShow.push( ticketMaker(
+//     tempTicketList[i]._id,
+//     tempTicketList[i].name,
+//     tempTicketList[i].lastName,
+//     tempTicketList[i].subject,
+//     tempTicketList[i].store,
+//     tempTicketList[i].priority,
+//     tempTicketList[i].title,
+//     tempTicketList[i].description
+// ));
