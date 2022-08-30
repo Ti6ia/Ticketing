@@ -6,6 +6,8 @@ const content = document.getElementById('content');
 const ticketList = document.getElementById('ticketList');
 const pathName = document.getElementById('path'); 
 
+
+// GLOBAL VARIABLES
 // get currentQuery
 const getCurrentQuery = async () => {
     const rawRes = await fetch('/admin/getCurrentQuery');
@@ -27,7 +29,6 @@ const setCurrentQuery = async (nQuery) => {
     const res = await rawRes.json();
     return res;
 }
-
 // get stores list
 const getStoresList = async () => {
     const rawRes = await fetch('/admin/getStoresList');
@@ -41,35 +42,31 @@ const getSubjectsList = async () => {
     return res;
 }
 
-
+// DATABASE
 // get all the tickets from DB
 const getTicketList = async () => {
     const rawRes = await fetch('/admin/getTicketList');
     const res = await rawRes.json();
     return res;
 }
-
 // get priority:"high" tickets from DB
 const getHighPriorityTickets = async () => {
     const rawRes = await fetch('/admin/getHighPriorityTickets');
     const res = await rawRes.json();
     return res;
 }
-
 // get priority:"medium" tickets from DB
 const getMediumPriorityTickets = async () => {
     const rawRes = await fetch('/admin/getMediumPriorityTickets');
     const res = await rawRes.json();
     return res;
 }
-
 // get priority:"low" tickets from DB
 const getLowPriorityTickets = async () => {
     const rawRes = await fetch('/admin/getLowPriorityTickets');
     const res = await rawRes.json();
     return res;
 }
-
 //get one ticket by ID
 const getTicketByID = async (id) => {
     const rawRes = await fetch('/admin/'+id);
@@ -77,6 +74,8 @@ const getTicketByID = async (id) => {
     return res;
 }
 
+
+// REQUESTS
 // add ticket
 const addTicketReq = async (obj) => {
     const rawRes = await fetch('admin/addTicket', {
@@ -96,13 +95,10 @@ const addTicketReq = async (obj) => {
         })
     });
     const res = await rawRes.json();
-    console.log('New Ticket added correctly');
     return res;
 };
-
 // edit ticket
 const editTicketReq = async (obj, currentTicketID) => {
-    console.log(obj);
     const rawRes = await fetch('/admin/'+currentTicketID, { 
         method: 'PATCH',
         headers: {
@@ -120,12 +116,11 @@ const editTicketReq = async (obj, currentTicketID) => {
         })
     });
     const res = await rawRes.json();
-    console.log('Ticket updated correctly');
     return res;
 }
 
 
-//  DIV MAKERS
+//  NODE MAKERS
 // returns div.popup-form-row (rows)
 const formRowMaker = () => {
     let row = document.createElement('div');
@@ -185,8 +180,8 @@ const formButtonMaker = (id, name) => {
 }
 
 
-
-// return node ticketList's ticket to show
+// COMPLETE NODE MAKERS
+// return NODE TICKET to show
 const ticketMaker = ( newTicket ) => {
     // Ticket Container
     const ticketContainer = document.createElement('div');
@@ -260,10 +255,8 @@ const ticketMaker = ( newTicket ) => {
 
     return ticketContainer;
 } 
-
-// return node popup for ADD a ticket
+// return NODE popup for ADD a ticket
 const addPopupMaker = async () => {
-    console.log('popup maker');
     // popup
     const popup = document.createElement('div');
     popup.classList.add('popup');
@@ -326,13 +319,9 @@ const addPopupMaker = async () => {
 
     return popup;
 }
-
-// return node popup for EDIT a ticket
+// return NODE popup for EDIT a ticket
 const editPopupMaker = async (id) => {
-    console.log('appena dentro editPopupMaker')
     const givenTicket = await getTicketByID(id);
-    console.log('givenTicket'); 
-    console.log(givenTicket); 
 
     // popup
     const popup = document.createElement('div');
@@ -396,8 +385,7 @@ const editPopupMaker = async (id) => {
 
     return popup;
 }
-
-// return node popup for DELETE a ticket
+// return NODE popup for DELETE a ticket
 const deletePopupMaker = async (id) => {
     const givenTicket = await getTicketByID(id);
 
@@ -493,6 +481,7 @@ const deletePopupMaker = async (id) => {
 }
 
 
+// TOOLS
 // removes all the child from a node
 const childRemover = (node) => {
     while( node.hasChildNodes() ){
@@ -501,7 +490,7 @@ const childRemover = (node) => {
 }
 
 
-
+// EVENT LISTENERS
 //setup add button
 const setupAddButton = () => {
     const btnAddTicket = document.getElementById('btnAddTicket');
@@ -520,15 +509,13 @@ const setupAddButton = () => {
                 title: document.getElementById("title").value,
                 description: document.getElementById("description").value
             }
-            const tmp = addTicketReq(newTicket);
-            console.log("Nuovo ticket aggiunto:");
+            addTicketReq(newTicket);
             body.removeChild(currentPopupAddTicket);
             location.reload();
         })
 
         const cancel = document.getElementById('cancel');
         cancel.addEventListener('click', () => {
-            console.log('cancel');
             body.removeChild(currentPopupAddTicket);
         })
     });
@@ -611,7 +598,7 @@ const setupDropdownButtons = () => {
                 drop.classList.add('fa-caret-down');
                 node_dropdown.classList.remove('showDropDownTicket');
             } else {
-                console.log('wuuuuutt');
+                console.log('Ci sono dei problemi in: "setupDropdownButtons"');
             }
         });
     });
@@ -625,7 +612,8 @@ const setupEventListeners = () => {
 setupAddButton();
 
 
-// (MAIN) when the page loads:
+// MAIN 
+// when the page loads:
 window.onload = async () => {
     let currentQuery = await getCurrentQuery(); // 0: AllTickets, 1: HighPriorityTickets, 2: MediumPriorityTickets, 3: LowPriorityTickets 
 
@@ -735,101 +723,3 @@ window.onload = async () => {
     
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-// return node ticketList's ticket to show
-// const ticketMaker = (id, newName, newLastName, newSubject, newStore, newPriority, newTitle, newDescription) => {
-//     // Ticket Container
-//     const ticketContainer = document.createElement('div');
-//     ticketContainer.classList.add('ticketContainer');
-//     // dropDownTicket
-//     const dropDownTicket = document.createElement('div');
-//     dropDownTicket.classList.add('dropDownTicket');
-//     // Ticket
-//     const ticket = document.createElement('div');
-//     ticket.classList.add('ticket');
-//     // drop
-//     const drop = document.createElement('i');
-//     drop.classList.add('drop', 'fa-solid', 'fa-caret-down');
-//     drop.setAttribute('data-opened', 'false');
-//     // name
-//     const name = document.createElement('div');
-//     name.classList.add('name');
-//     name.innerText = newName;
-//     // lastName
-//     const lastName = document.createElement('div');
-//     lastName.classList.add('lastName');
-//     lastName.innerText = newLastName;
-//     // subject
-//     const subject = document.createElement('div');
-//     subject.classList.add('subject');
-//     subject.innerText = newSubject;
-//     // store
-//     const store = document.createElement('div');
-//     store.classList.add('store');
-//     store.innerText = newStore;
-//     // priority
-//     const priority = document.createElement('div');
-//     priority.classList.add('priority');
-//     priority.innerText = newPriority;
-//     // title
-//     const title = document.createElement('div');
-//     title.classList.add('title');
-//     title.innerText = newTitle;
-//     // description
-//     const description = document.createElement('div');
-//     description.classList.add('description');
-//     description.innerText = newDescription;
-//     // editButtons
-//     const editButtons = document.createElement('div');
-//     editButtons.classList.add('editButtons');
-//     // editTicket
-//     const editTicket = document.createElement('i');
-//     editTicket.id = id;
-//     editTicket.classList.add('edit', 'fas', 'fa-edit');
-//     // deleteTicket
-//     const deleteTicket = document.createElement('i');
-//     deleteTicket.id = id;
-//     deleteTicket.classList.add('delete', 'fa-regular', 'fa-trash-can');
-
-//     editButtons.appendChild(editTicket);
-//     editButtons.appendChild(deleteTicket);
-
-//     ticket.appendChild(drop);
-//     ticket.appendChild(name);
-//     ticket.appendChild(lastName);
-//     ticket.appendChild(subject);
-//     ticket.appendChild(store);
-//     ticket.appendChild(priority);
-//     ticket.appendChild(editButtons);
-
-//     dropDownTicket.appendChild(title);
-//     dropDownTicket.appendChild(description);
-
-//     ticketContainer.appendChild(ticket);
-//     ticketContainer.appendChild(dropDownTicket);
-
-//     return ticketContainer;
-// } 
-
-
-// ticketsToShow.push( ticketMaker(
-//     tempTicketList[i]._id,
-//     tempTicketList[i].name,
-//     tempTicketList[i].lastName,
-//     tempTicketList[i].subject,
-//     tempTicketList[i].store,
-//     tempTicketList[i].priority,
-//     tempTicketList[i].title,
-//     tempTicketList[i].description
-// ));
