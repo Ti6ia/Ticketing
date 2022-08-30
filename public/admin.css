@@ -54,7 +54,14 @@ body{
     z-index: 1;
     box-shadow: 5px 1px 8px 1px #888888;
 }
-#btnAddTicket{
+.tools{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 2rem;
+}
+#btnAddTicket,
+#btnOpenAllDropdowns{
     font-size: 27px;
     cursor: pointer;
 }

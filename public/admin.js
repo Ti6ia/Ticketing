@@ -42,6 +42,7 @@ const getSubjectsList = async () => {
     return res;
 }
 
+
 // DATABASE
 // get all the tickets from DB
 const getTicketList = async () => {
@@ -583,16 +584,17 @@ const setupDropdownButtons = () => {
     const buttonsDropdown = document.querySelectorAll('.drop');
     buttonsDropdown.forEach((button) => {
         button.addEventListener('click', (e) => {
+            console.log(e);
             const drop = e.target;
-            let isOpened = drop.attributes[1].value;
-            const node_father = e.path[2];
-            const node_dropdown = node_father.lastChild;
-            if(isOpened == 'false'){
+            let isOpened = drop.attributes[1].value; // data-opened
+            const node_father = e.path[2]; // move to the father
+            const node_dropdown = node_father.lastChild; // to find the hidden div 
+            if(isOpened == 'false'){ // if its close i'll open it
                 drop.attributes[1].value = 'true';
                 drop.classList.remove('fa-caret-down');
                 drop.classList.add('fa-caret-up');
                 node_dropdown.classList.add('showDropDownTicket');
-            } else if(isOpened == 'true'){
+            } else if(isOpened == 'true'){ // if its open i'll close it
                 drop.attributes[1].value = 'false';
                 drop.classList.remove('fa-caret-up');
                 drop.classList.add('fa-caret-down');
@@ -603,12 +605,40 @@ const setupDropdownButtons = () => {
         });
     });
 }
+// setup button open all dropdowns
+const setupOpenAllDropdownsButton = () => {
+    const openAllDropdownButton = document.getElementById('btnOpenAllDropdowns');
+    openAllDropdownButton.addEventListener('click', () => {
+        const dropdowns = document.querySelectorAll('.dropDownTicket');
+        const dropdownButtons = document.querySelectorAll('.drop');
+        let isOpened = openAllDropdownButton.attributes[1].value;
+        if(isOpened == 'false'){
+            openAllDropdownButton.attributes[1].value = 'true';
+            for(let i = 0; i < dropdowns.length; i++){
+                dropdownButtons[i].attributes[1].value = 'true';
+                dropdownButtons[i].classList.remove('fa-caret-down');
+                dropdownButtons[i].classList.add('fa-caret-up');
+                dropdowns[i].classList.add('showDropDownTicket');
+            }
+        } else {
+            openAllDropdownButton.attributes[1].value = 'false';
+            for(let i = 0; i < dropdowns.length; i++){
+                dropdownButtons[i].attributes[1].value = 'false';
+                dropdownButtons[i].classList.remove('fa-caret-up');
+                dropdownButtons[i].classList.add('fa-caret-down');
+                dropdowns[i].classList.remove('showDropDownTicket');
+            }
+        }
+        
+    });
+}
 //setup Event Listeners
 const setupEventListeners = () => {
     setupEditButtons();
     setupDeleteButtons();
     setupDropdownButtons();
 }
+setupOpenAllDropdownsButton();
 setupAddButton();
 
 

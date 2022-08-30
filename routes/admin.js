@@ -6,11 +6,10 @@ const publicPath = path.join(__dirname, '../');
 const Ticket = require('../models/ticket');
 const session = require('express-session');
 
-router.use(session({ secret:'asdasdasd'}));
+router.use(session({ secret:'asdasdasd' }));
 
 // get currentQuery
 router.get('/getCurrentQuery', (req, res) => {
-    console.log('dentro getCurrentQuery');
     if(req.session.currentQuery){
         res.json(req.session.currentQuery);
     } else {
@@ -20,7 +19,6 @@ router.get('/getCurrentQuery', (req, res) => {
 });
 // set currentQuery
 router.post('/setCurrentQuery', (req, res) => {
-    console.log('dentro setCurrentQuery');
     req.session.currentQuery = req.body.query;
     res.json({ message: 'currentQuery setted correctly', currentQuery: req.session.currentQuery });
 });

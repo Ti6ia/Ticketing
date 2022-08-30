@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.0.0/css/all.css">
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.1.2/css/all.css">
     <link rel="stylesheet" href="admin.css">
     <script defer src="admin.js"></script>
     <title>Dashboard</title>
@@ -22,7 +22,10 @@
         <div class="main">
             <div class="header">
                 <div id="path">All Tickets</div>
-                <i id="btnAddTicket" class="fa-solid fa-plus"></i>
+                <div class="tools">
+                    <i id="btnOpenAllDropdowns" data-opened="false" class="fa-solid fa-angles-down"></i>
+                    <i id="btnAddTicket" class="fa-solid fa-plus"></i>
+                </div>
             </div>
             <div id="content">
                 <div id="ticketList">
