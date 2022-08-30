@@ -4,19 +4,40 @@ console.log('admin js');
 const body = document.querySelector('body');
 const content = document.getElementById('content');
 const ticketList = document.getElementById('ticketList');
-const btnAddTicket = document.getElementById('btnAddTicket');
-const pathName = document.getElementById('path');
+const pathName = document.getElementById('path'); 
+
+// get currentQuery
+const getCurrentQuery = async () => {
+    const rawRes = await fetch('/admin/getCurrentQuery');
+    const res = await rawRes.json();
+    return res;
+}
+// set currentQuery
+const setCurrentQuery = async (nQuery) => {
+    const rawRes = await fetch('admin/setCurrentQuery', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            query: nQuery
+        })
+    });
+    const res = await rawRes.json();
+    return res;
+}
 
 // get stores list
 const getStoresList = async () => {
     const rawRes = await fetch('/admin/getStoresList');
-    const res = rawRes.json();
+    const res = await rawRes.json();
     return res;
 }
 // get subjects list
 const getSubjectsList = async () => {
     const rawRes = await fetch('/admin/getSubjectsList');
-    const res = rawRes.json();
+    const res = await rawRes.json();
     return res;
 }
 
@@ -76,6 +97,7 @@ const addTicketReq = async (obj) => {
     });
     const res = await rawRes.json();
     console.log('New Ticket added correctly');
+    return res;
 };
 
 // edit ticket
@@ -241,6 +263,7 @@ const ticketMaker = ( newTicket ) => {
 
 // return node popup for ADD a ticket
 const addPopupMaker = async () => {
+    console.log('popup maker');
     // popup
     const popup = document.createElement('div');
     popup.classList.add('popup');
@@ -284,10 +307,10 @@ const addPopupMaker = async () => {
     const description = formRowMaker();
     description.appendChild(formLabelMaker('Description'));
     description.appendChild(formTextareaMaker('description', '', 30, 5));
-    // btnAddTicket
+    // buttons
     const buttonsRow = formRowMaker();
-    buttonsRow.appendChild(formButtonMaker('buttonAddTicket', 'Aggiungi ticket'));
-    buttonsRow.appendChild(formButtonMaker('buttonCancel', 'Annulla'));
+    buttonsRow.appendChild(formButtonMaker('addTicket', 'Aggiungi ticket'));
+    buttonsRow.appendChild(formButtonMaker('cancel', 'Annulla'));
 
     formContainer.appendChild(name);
     formContainer.appendChild(lastName);
@@ -481,13 +504,13 @@ const childRemover = (node) => {
 
 //setup add button
 const setupAddButton = () => {
-    const buttonAddTicket = document.getElementById('btnAddTicket');
-    buttonAddTicket.addEventListener('click', async () => {
+    const btnAddTicket = document.getElementById('btnAddTicket');
+    btnAddTicket.addEventListener('click', async () => {
         const currentPopupAddTicket = await addPopupMaker();
         body.appendChild(currentPopupAddTicket);
 
-        const buttonAddTicket = document.getElementById('buttonAddTicket');
-        buttonAddTicket.addEventListener('click', () => {
+        const addTicket = document.getElementById('addTicket');
+        addTicket.addEventListener('click', () => {
             const newTicket = {
                 name: document.getElementById("name").value,
                 lastName: document.getElementById("lastName").value,
@@ -497,13 +520,15 @@ const setupAddButton = () => {
                 title: document.getElementById("title").value,
                 description: document.getElementById("description").value
             }
-            addTicketReq(newTicket);
+            const tmp = addTicketReq(newTicket);
+            console.log("Nuovo ticket aggiunto:");
             body.removeChild(currentPopupAddTicket);
             location.reload();
         })
 
-        const buttonCancel = document.getElementById('buttonCancel');
-        buttonCancel.addEventListener('click', () => {
+        const cancel = document.getElementById('cancel');
+        cancel.addEventListener('click', () => {
+            console.log('cancel');
             body.removeChild(currentPopupAddTicket);
         })
     });
@@ -529,10 +554,8 @@ const setupEditButtons = () => {
                     description: document.getElementById("description").value
                 }
                 const res = await editTicketReq(newTicket, currentTicketID);
-                console.log(res);
-                body.removeChild(currentPopupEditTicket);
+                // body.removeChild(currentPopupEditTicket);
                 location.reload();
-                // location.reload();
             })
 
             const buttonCancel = document.getElementById('buttonCancel');
@@ -595,32 +618,65 @@ const setupDropdownButtons = () => {
 }
 //setup Event Listeners
 const setupEventListeners = () => {
-    setupAddButton();
     setupEditButtons();
     setupDeleteButtons();
     setupDropdownButtons();
 }
+setupAddButton();
 
 
 // (MAIN) when the page loads:
 window.onload = async () => {
+    let currentQuery = await getCurrentQuery(); // 0: AllTickets, 1: HighPriorityTickets, 2: MediumPriorityTickets, 3: LowPriorityTickets 
 
-    // query to load on screen
-    let currentQuery = process.env.QUERY;
-    currentQuery = 'highTickets';
-
-    // DEFAULT: get all tickets
+    // get querys
     const tempTicketList = await getTicketList();
-    
-    // print all tickets (By Default)
-    for(let i = 0; i < tempTicketList.length; i++){
-        ticketList.appendChild(ticketMaker(tempTicketList[i]));
+    const tempHighPriorityTicketList = await getHighPriorityTickets();
+    const tempMediumPriorityTicketList = await getMediumPriorityTickets();
+    const tempLowPriorityTicketList = await getLowPriorityTickets();
+
+    // print ticketList
+    switch(currentQuery){
+        case 0:
+            pathName.innerText = 'All Tickets';
+            childRemover(ticketList);
+            for (let i = 0; i < tempTicketList.length; i++) {
+                ticketList.appendChild(ticketMaker(tempTicketList[i]));
+            }
+            setupEventListeners();
+            break;
+        case 1:
+            pathName.innerText = 'High Priority Tickets';
+            childRemover(ticketList);
+            for(let i = 0; i < tempHighPriorityTicketList.length; i++){
+                ticketList.appendChild(ticketMaker(tempHighPriorityTicketList[i]));
+            }
+            setupEventListeners();
+            break;
+        case 2:
+            pathName.innerText = 'Medium Priority Tickets';
+            childRemover(ticketList);
+            for(let i = 0; i < tempMediumPriorityTicketList.length; i++){
+                ticketList.appendChild(ticketMaker(tempMediumPriorityTicketList[i]));
+            }
+            setupEventListeners();
+            break;
+        case 3:
+            pathName.innerText = 'Low Priority Tickets';
+            childRemover(ticketList);
+            for(let i = 0; i < tempLowPriorityTicketList.length; i++){
+                ticketList.appendChild(ticketMaker(tempLowPriorityTicketList[i]));
+            }
+            setupEventListeners();
+            break;
+        default:
+            alert('Qualcosa è andato storto..');
     }
-    setupEventListeners();
 
     // setup logo to home button
     const logo = document.getElementById('logo');
-    logo.addEventListener('click', () => {
+    logo.addEventListener('click', async () => {
+        console.log(await setCurrentQuery(0));
         pathName.innerText = 'All Tickets';
         childRemover(ticketList);
         for (let i = 0; i < tempTicketList.length; i++) {
@@ -631,7 +687,8 @@ window.onload = async () => {
 
     // setup All Tickets button
     const btnAllTickets = document.getElementById('allTickets');
-    btnAllTickets.addEventListener('click', () => {
+    btnAllTickets.addEventListener('click', async () => {
+        console.log(await setCurrentQuery(0));
         pathName.innerText = 'All Tickets';
         childRemover(ticketList);
         for(let i = 0; i < tempTicketList.length; i++){
@@ -640,10 +697,10 @@ window.onload = async () => {
         setupEventListeners();
     });
 
-    // setup Priority: High button
-    const tempHighPriorityTicketList = await getHighPriorityTickets();
+    // setup Priority:high button
     const btnHighPriority = document.getElementById('highPriority'); 
-    btnHighPriority.addEventListener('click', () => {
+    btnHighPriority.addEventListener('click', async () => {
+        console.log(await setCurrentQuery(1));
         pathName.innerText = 'High Priority Tickets';
         childRemover(ticketList);
         for(let i = 0; i < tempHighPriorityTicketList.length; i++){
@@ -652,10 +709,10 @@ window.onload = async () => {
         setupEventListeners();
     });
 
-    // setup Priority: Medium button
-    const tempMediumPriorityTicketList = await getMediumPriorityTickets();
+    // setup Priority:medium button
     const btnMediumPriority = document.getElementById('mediumPriority'); 
-    btnMediumPriority.addEventListener('click', (e) => {
+    btnMediumPriority.addEventListener('click', async () => {
+        console.log(await setCurrentQuery(2));
         pathName.innerText = 'Medium Priority Tickets';
         childRemover(ticketList);
         for(let i = 0; i < tempMediumPriorityTicketList.length; i++){
@@ -664,10 +721,10 @@ window.onload = async () => {
         setupEventListeners();
     });
 
-    // setup Priority: Low button
-    const tempLowPriorityTicketList = await getLowPriorityTickets();
+    // setup Priority:low button
     const btnLowPriority = document.getElementById('lowPriority'); 
-    btnLowPriority.addEventListener('click', (e) => {
+    btnLowPriority.addEventListener('click', async () => {
+        console.log(await setCurrentQuery(3));
         pathName.innerText = 'Low Priority Tickets';
         childRemover(ticketList);
         for(let i = 0; i < tempLowPriorityTicketList.length; i++){

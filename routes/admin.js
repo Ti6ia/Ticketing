@@ -4,16 +4,34 @@ const router = express.Router();
 const path = require('path');
 const publicPath = path.join(__dirname, '../');
 const Ticket = require('../models/ticket');
+const session = require('express-session');
+
+router.use(session({ secret:'asdasdasd'}));
+
+// get currentQuery
+router.get('/getCurrentQuery', (req, res) => {
+    console.log('dentro getCurrentQuery');
+    if(req.session.currentQuery){
+        res.json(req.session.currentQuery);
+    } else {
+        req.session.currentQuery = 0;
+        res.json(req.session.currentQuery);
+    }
+});
+// set currentQuery
+router.post('/setCurrentQuery', (req, res) => {
+    console.log('dentro setCurrentQuery');
+    req.session.currentQuery = req.body.query;
+    res.json({ message: 'currentQuery setted correctly', currentQuery: req.session.currentQuery });
+});
 
 router.get('/getStoresList', (req, res) => {
     storesList = JSON.parse(process.env.STORES);
-    console.log(storesList);
     res.send(storesList);
 });
 
 router.get('/getSubjectsList', (req, res) => {
     subjectsList = JSON.parse(process.env.SUBJECTS);
-    console.log(subjectsList);
     res.send(subjectsList);
 });
 
