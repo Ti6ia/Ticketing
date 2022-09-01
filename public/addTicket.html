@@ -12,28 +12,18 @@
     <main>
         <div id="content">
             <div class="rows">
-                <span class="text">Ticket:</span>
-                <span id="id" class="text">id</span>
+                <h1>Nuovo ticket:</h1>
             </div>
+
+            <div class="space"></div>
             
             <div class="rows">
                 <div class="cols">
-                    <span class="text">Name</span>
-                    <input type="text" id="name">
-                </div>
-                <div class="cols">
-                    <span class="text">Second Name</span>
-                    <input type="text" id="lastName">
-                </div>
-            </div>
-            
-            <div class="rows">
-                <div class="cols">
-                    <span class="text">Subject</span>
+                    <span class="text">Tipologia problema</span>
                     <select name="subjects" id="subject">
                         <option value="totem">Problema tecnico totem</option>
                         <option value="shoes">Vorrei una scarpa che qui non c'è</option>
-                        <option value="cashier">Il cassiere è uno stronzo</option>
+                        <option value="cashier">Il cassiere è antipatico</option>
                     </select>
                 </div>
                 <div class="cols">
@@ -49,7 +39,7 @@
                     </select>
                 </div>
                 <div class="cols">
-                    <span class="text">Priority</span>
+                    <span class="text">Priorità</span>
                     <select name="priorityLevel" id="priority">
                         <option value="low">Basso</option>
                         <option value="medium">Medio</option>
@@ -58,6 +48,19 @@
                 </div>
             </div>
             
+            <div class="space"></div>
+
+            <div class="rows">
+                <div class="cols">
+                    <span class="text">Nome</span>
+                    <input type="text" id="name">
+                </div>
+                <div class="cols">
+                    <span class="text">Cognome</span>
+                    <input type="text" id="lastName">
+                </div>
+            </div>
+
             <div class="rows">
                 <div class="cols">
                     <span class="text">Oggetto: </span>
@@ -71,16 +74,19 @@
                 </div>
             </div>
 
+            <div class="space"></div>
+
             <div class="rows">
                 <button id="submit" type="submit">Conferma Ticket</button>
             </div>
 
-            <div class="rows">
-                <a href="index.html">Home page</a>
-            </div>
+            <div class="space"></div>
 
-            <div class="rows">
+            <div class="rows bottomLinks">
+                <a href="index.html">Home page</a>
                 <a href="admin.html">Dashboard</a>
             </div>
+
+            
 </body>
 </html>

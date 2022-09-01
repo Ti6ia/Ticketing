@@ -14,28 +14,46 @@ main{
 }
 
 #content{
-    height: 85vh;
+    height: auto;
     width: 70vw;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    align-items: center;
     gap: 1rem;
-    align-items: flex-start;
-    padding: 2rem;
-    border-radius: 5px;
+    padding: 3rem;
+
+    background-color: #fff;
+    box-shadow: 1px 1px 8px 3px #8b8b8b;    
+    border-radius: 10px;
+    /* border-radius: 5px;
     box-shadow: 0px 0px 10px 0px;
     color: rgb(144, 144, 144);
-    background-color: rgb(235, 235, 235);
+    background-color: rgb(235, 235, 235); */
 }
 
 .rows{
+    width: 80%;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: 2rem;
     color: black;
+}
+.rows>h1{
+    margin: 0;
+    color: #1695D5;
+}
+
+@media screen and (max-width: 780px) {
+    .rows{
+        width: 80%;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        color: black;
+    }
 }
 
 .cols{
@@ -43,11 +61,32 @@ main{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 0.3rem;
+}
+
+input, select{
+    padding: 0.3rem 0.5rem 0.3rem 0.5rem;
 }
 
 .btnContainer{
     width: 200px;
     height: 3em;
+}
+
+button{
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    color: white;
+    background-color: #1695D5;
+    border: 0;
+    border-radius: 10px;
+}
+
+.bottomLinks {
+    justify-content: space-between;
+}
+
+.space{
+    /* height: 0.2rem; */
 }
 
 #btnAddTicket{

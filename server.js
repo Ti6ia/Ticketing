@@ -13,10 +13,6 @@ db.once('open', () => console.log('Connected to database'));
 
 app.use(express.json()); //imposto il tipo di file che voglio passare nel middleweare
 
-router.get('/getStoresList', (req, res) => {
-    res.send('getStoresList');
-});
-
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
